@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>San Juan Shalom · Registro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --night:#141a30;--night-light:#1f2747;--card:#232c52;--card-soft:#2a3460;
+    --ember:#ff7b39;--ember-deep:#e6541f;--gold:#ffc15e;--cream:#fbf3e7;
+    --muted:#9aa1c2;--success:#4caf82;--info:#4fa8d8;--pending:#e8a33d;
+    --radius:18px;--radius-sm:12px;
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{ background:var(--night); color:var(--cream); font-family:'Inter',system-ui,sans-serif; min-height:100vh; -webkit-font-smoothing:antialiased; }
+  .wrap{ max-width:480px; margin:0 auto; padding-bottom:48px; }
+
+  /* Header */
+  .header{ position:relative; text-align:center; padding:44px 24px 56px; background:linear-gradient(180deg,var(--night) 0%,var(--night-light) 55%,var(--ember-deep) 150%); overflow:hidden; }
+  .glow{ position:absolute; left:50%; bottom:-60px; width:280px; height:200px; transform:translateX(-50%); background:radial-gradient(closest-side,rgba(255,123,57,0.55),rgba(255,123,57,0)); filter:blur(6px); animation:flicker 4.5s ease-in-out infinite; }
+  @keyframes flicker{ 0%,100%{ opacity:0.85; transform:translateX(-50%) scale(1); } 50%{ opacity:1; transform:translateX(-50%) scale(1.08); } }
+  @media(prefers-reduced-motion:reduce){ .glow{ animation:none; } }
+  .eyebrow{ position:relative; z-index:1; font-size:0.72rem; letter-spacing:0.22em; text-transform:uppercase; color:var(--gold); font-weight:600; margin:0 0 10px; }
+  .title{ position:relative; z-index:1; font-family:'Fredoka',sans-serif; font-weight:700; font-size:2.3rem; margin:0; color:var(--cream); text-shadow:0 4px 24px rgba(255,123,57,0.35); }
+  .subtitle{ position:relative; z-index:1; margin:10px 0 0; color:var(--muted); font-size:0.95rem; }
+
+  /* Tabs */
+  .tabs{ display:flex; gap:6px; margin:-28px 16px 18px; position:relative; z-index:2; background:var(--card); border-radius:999px; padding:5px; box-shadow:0 10px 30px rgba(0,0,0,0.35); }
+  .tab-btn{ flex:1; border:none; background:transparent; color:var(--muted); font-family:'Inter',sans-serif; font-weight:600; font-size:0.92rem; padding:11px 8px; border-radius:999px; cursor:pointer; transition:background 0.2s,color 0.2s; }
+  .tab-btn.active{ background:linear-gradient(135deg,var(--ember),var(--ember-deep)); color:#fff; }
+  .tab-btn:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+
+  .panel{ padding:0 16px; }
+  .card{ background:var(--card); border-radius:var(--radius); padding:22px; box-shadow:0 12px 30px rgba(0,0,0,0.25); }
+
+  /* Form */
+  .field{ margin-bottom:18px; }
+  label{ display:block; font-size:0.85rem; font-weight:600; color:var(--muted); margin-bottom:7px; }
+  input[type="text"],input[type="tel"]{ width:100%; background:var(--card-soft); border:1px solid rgba(255,255,255,0.08); border-radius:var(--radius-sm); padding:13px 14px; color:var(--cream); font-size:1rem; font-family:'Inter',sans-serif; }
+  input::placeholder{ color:#6b7299; }
+  input:focus-visible{ outline:none; border-color:var(--ember); box-shadow:0 0 0 3px rgba(255,123,57,0.3); }
+
+  .pago-group{ display:flex; gap:8px; }
+  .pago-btn{ flex:1; padding:12px 6px; border-radius:var(--radius-sm); border:1px solid rgba(255,255,255,0.1); background:var(--card-soft); color:var(--muted); font-family:'Inter',sans-serif; font-weight:600; font-size:0.85rem; cursor:pointer; transition:all 0.15s; }
+  .pago-btn.active[data-value="Pendiente"]{ background:var(--pending); color:#241500; border-color:var(--pending); }
+  .pago-btn.active[data-value="Efectivo"]{ background:var(--success); color:#042016; border-color:var(--success); }
+  .pago-btn.active[data-value="QR"]{ background:var(--info); color:#031b29; border-color:var(--info); }
+  .pago-btn:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+
+  .categoria-group{ display:flex; gap:8px; }
+  .categoria-btn{ flex:1; padding:12px 6px; border-radius:var(--radius-sm); border:1px solid rgba(255,255,255,0.1); background:var(--card-soft); color:var(--muted); font-family:'Inter',sans-serif; font-weight:600; font-size:0.85rem; cursor:pointer; transition:all 0.15s; }
+  .categoria-btn.active{ background:linear-gradient(135deg,var(--ember),var(--ember-deep)); color:#fff; border-color:var(--ember); }
+  .categoria-btn:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+
+  .precio-group{ display:flex; gap:8px; }
+  .precio-btn{ flex:1; padding:12px 6px; border-radius:var(--radius-sm); border:1px solid rgba(255,255,255,0.1); background:var(--card-soft); color:var(--muted); font-family:'Inter',sans-serif; font-weight:600; font-size:0.82rem; cursor:pointer; transition:all 0.15s; line-height:1.3; }
+  .precio-btn span{ display:block; font-size:0.72rem; font-weight:400; margin-top:2px; opacity:0.8; }
+  .precio-btn.active{ background:rgba(255,193,94,0.2); color:var(--gold); border-color:var(--gold); }
+  .precio-btn:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+
+  .submit-btn{ width:100%; padding:15px; border:none; border-radius:var(--radius-sm); background:linear-gradient(135deg,var(--ember),var(--ember-deep)); color:#fff; font-family:'Inter',sans-serif; font-weight:700; font-size:1rem; cursor:pointer; margin-top:6px; transition:opacity 0.15s,transform 0.1s; }
+  .submit-btn:disabled{ opacity:0.6; cursor:not-allowed; }
+  .submit-btn:active{ transform:scale(0.98); }
+  .submit-btn:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+
+  .toast{ margin-bottom:16px; padding:13px 16px; border-radius:var(--radius-sm); font-size:0.9rem; font-weight:500; display:none; }
+  .toast.success{ background:rgba(76,175,130,0.18); color:var(--success); border:1px solid rgba(76,175,130,0.35); }
+  .toast.error{ background:rgba(230,84,30,0.18); color:#ff9d6e; border:1px solid rgba(230,84,30,0.35); }
+  .toast.show{ display:block; }
+  .hint{ font-size:0.78rem; color:var(--muted); margin-top:14px; line-height:1.5; }
+
+  /* Registrador */
+  .registrador-bar{ margin:0 16px 14px; font-size:0.78rem; color:var(--muted); text-align:center; }
+  .registrador-bar strong{ color:var(--gold); }
+  .registrador-cambiar{ background:none; border:none; color:var(--ember); font-weight:600; font-size:0.78rem; cursor:pointer; padding:0; text-decoration:underline; }
+  .registrador-cambiar:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+
+  .overlay{ position:fixed; inset:0; background:rgba(10,13,26,0.92); display:flex; align-items:center; justify-content:center; padding:24px; z-index:50; }
+  .overlay-card{ background:var(--card); border-radius:var(--radius); padding:26px 22px; max-width:380px; width:100%; box-shadow:0 20px 50px rgba(0,0,0,0.5); }
+  .overlay-title{ font-family:'Fredoka',sans-serif; font-size:1.4rem; margin:0 0 8px; color:var(--cream); }
+  .overlay-sub{ font-size:0.85rem; color:var(--muted); margin:0 0 18px; line-height:1.5; }
+  .registrador-options{ display:flex; flex-direction:column; gap:8px; margin-bottom:18px; }
+  .registrador-opt-btn{ padding:13px 14px; border-radius:var(--radius-sm); border:1px solid rgba(255,255,255,0.1); background:var(--card-soft); color:var(--cream); font-family:'Inter',sans-serif; font-weight:600; font-size:0.95rem; text-align:left; cursor:pointer; }
+  .registrador-opt-btn:hover{ border-color:var(--ember); }
+  .registrador-opt-btn:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+  .overlay-other{ border-top:1px solid rgba(255,255,255,0.08); padding-top:16px; }
+
+  /* List */
+  .list-header{ display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+  .search-box{ width:100%; background:var(--card-soft); border:1px solid rgba(255,255,255,0.08); border-radius:var(--radius-sm); padding:12px 14px; color:var(--cream); font-size:0.95rem; margin-bottom:16px; }
+  .search-box:focus-visible{ outline:none; border-color:var(--ember); box-shadow:0 0 0 3px rgba(255,123,57,0.3); }
+
+  .capacity{ display:flex; align-items:center; gap:10px; margin-bottom:18px; font-size:0.9rem; color:var(--muted); }
+  .capacity strong{ color:var(--cream); font-size:1.05rem; }
+  .capacity-flame{ width:20px; height:20px; flex-shrink:0; color:var(--ember); filter:drop-shadow(0 0 4px rgba(255,123,57,0.6)); }
+
+  .refresh-btn{ background:transparent; border:1px solid rgba(255,255,255,0.15); color:var(--muted); border-radius:999px; padding:8px 14px; font-size:0.8rem; font-weight:600; font-family:'Inter',sans-serif; cursor:pointer; }
+  .refresh-btn:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+  .refresh-btn:hover{ border-color:rgba(255,255,255,0.35); }
+
+  .guest-card{ background:var(--card-soft); border-radius:var(--radius-sm); padding:14px 16px; margin-bottom:10px; }
+  .guest-card-top{ display:flex; align-items:center; gap:10px; }
+  .numero-badge{ flex-shrink:0; font-family:'Fredoka',sans-serif; font-weight:600; font-size:0.82rem; color:var(--gold); background:rgba(255,193,94,0.12); border-radius:8px; padding:5px 8px; min-width:30px; text-align:center; }
+  .guest-info{ min-width:0; flex:1; }
+  .guest-name{ font-weight:600; font-size:0.97rem; color:var(--cream); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .guest-meta{ font-size:0.8rem; color:var(--muted); margin-top:3px; font-variant-numeric:tabular-nums; }
+
+  .wa-btn{ flex-shrink:0; width:34px; height:34px; border-radius:50%; background:#25D366; color:#0b3d1d; display:flex; align-items:center; justify-content:center; text-decoration:none; }
+  .wa-btn:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+
+  .pago-mini-group{ display:flex; gap:6px; margin-top:10px; }
+  .pago-mini-btn{ flex:1; padding:7px 4px; border-radius:var(--radius-sm); border:1px solid rgba(255,255,255,0.1); background:var(--card); color:var(--muted); font-family:'Inter',sans-serif; font-weight:600; font-size:0.72rem; cursor:pointer; transition:all 0.15s; }
+  .pago-mini-btn.active[data-value="Pendiente"]{ background:var(--pending); color:#241500; border-color:var(--pending); }
+  .pago-mini-btn.active[data-value="Efectivo"]{ background:var(--success); color:#042016; border-color:var(--success); }
+  .pago-mini-btn.active[data-value="QR"]{ background:var(--info); color:#031b29; border-color:var(--info); }
+  .pago-mini-btn:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+
+  .empty-state,.state-msg{ text-align:center; color:var(--muted); font-size:0.9rem; padding:36px 12px; }
+  .live-dot{ display:inline-block; width:7px; height:7px; border-radius:50%; background:var(--success); margin-right:5px; animation:pulse 2s ease-in-out infinite; }
+  @keyframes pulse{ 0%,100%{ opacity:1; } 50%{ opacity:0.3; } }
+
+  .delete-btn{ flex-shrink:0; width:30px; height:30px; border-radius:50%; background:rgba(230,84,30,0.15); border:1px solid rgba(230,84,30,0.3); color:#ff9d6e; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:background 0.15s; }
+  .delete-btn:hover{ background:rgba(230,84,30,0.3); }
+  .delete-btn:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+
+  .confirm-overlay{ position:fixed; inset:0; background:rgba(10,13,26,0.92); display:flex; align-items:center; justify-content:center; padding:24px; z-index:60; }
+  .confirm-card{ background:var(--card); border-radius:var(--radius); padding:26px 22px; max-width:340px; width:100%; box-shadow:0 20px 50px rgba(0,0,0,0.5); text-align:center; }
+  .confirm-card h3{ font-family:'Fredoka',sans-serif; font-size:1.3rem; margin:0 0 8px; color:var(--cream); }
+  .confirm-card p{ font-size:0.9rem; color:var(--muted); margin:0 0 22px; line-height:1.5; }
+  .confirm-btns{ display:flex; gap:10px; }
+  .confirm-cancel{ flex:1; padding:13px; border-radius:var(--radius-sm); border:1px solid rgba(255,255,255,0.15); background:transparent; color:var(--muted); font-family:'Inter',sans-serif; font-weight:600; font-size:0.9rem; cursor:pointer; }
+  .confirm-delete{ flex:1; padding:13px; border-radius:var(--radius-sm); border:none; background:linear-gradient(135deg,#e6541f,#c43c0a); color:#fff; font-family:'Inter',sans-serif; font-weight:700; font-size:0.9rem; cursor:pointer; }
+
+  .export-btn{ background:transparent; border:1px solid rgba(255,255,255,0.15); color:var(--muted); border-radius:999px; padding:8px 14px; font-size:0.8rem; font-weight:600; font-family:'Inter',sans-serif; cursor:pointer; }
+  .export-btn:hover{ border-color:rgba(255,255,255,0.35); }
+</style>
+</head>
+<body>
+
+<!-- Overlay: quién registra -->
+<div class="overlay" id="registradorOverlay" style="display:none;">
+  <div class="overlay-card">
+    <p class="eyebrow">Antes de empezar</p>
+    <h2 class="overlay-title">¿Quién está registrando?</h2>
+    <p class="overlay-sub">Elige tu nombre. Este teléfono lo va a recordar para los próximos registros.</p>
+    <div class="registrador-options" id="registradorOptions"></div>
+    <div class="overlay-other">
+      <input type="text" id="registradorOtroInput" class="search-box" placeholder="Escribe tu nombre" style="margin-bottom:10px;">
+      <button type="button" class="submit-btn" onclick="confirmarRegistradorOtro()">Continuar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Overlay: confirmar borrado -->
+<div class="confirm-overlay" id="confirmOverlay" style="display:none;">
+  <div class="confirm-card">
+    <h3>¿Borrar inscrito?</h3>
+    <p id="confirmMsg">Esta acción no se puede deshacer.</p>
+    <div class="confirm-btns">
+      <button class="confirm-cancel" onclick="cerrarConfirm()">Cancelar</button>
+      <button class="confirm-delete" id="confirmDeleteBtn">Borrar</button>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="header">
+    <div class="glow"></div>
+    <p class="eyebrow">Bienvenidos</p>
+    <h1 class="title">San Juan Shalom</h1>
+    <p class="subtitle">Registro de inscritos</p>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" id="tabBtnRegistrar" onclick="switchTab('registrar')">Registrar</button>
+    <button class="tab-btn" id="tabBtnLista" onclick="switchTab('lista')">Lista <span id="tabCount"></span></button>
+  </div>
+
+  <div class="registrador-bar" id="registradorBar" style="display:none;">
+    Registrando como <strong id="registradorNombre"></strong> · <button type="button" class="registrador-cambiar" onclick="cambiarRegistrador()">Cambiar</button>
+  </div>
+
+  <!-- Panel Registrar -->
+  <div class="panel" id="panelRegistrar">
+    <div class="card">
+      <div class="toast" id="toast"></div>
+      <form id="formRegistro">
+        <div class="field">
+          <label for="nombre">Nombre</label>
+          <input type="text" id="nombre" placeholder="Nombre completo" autocomplete="off" required>
+        </div>
+        <div class="field">
+          <label for="celular">Celular (opcional)</label>
+          <input type="tel" id="celular" placeholder="Número de celular" autocomplete="off">
+        </div>
+        <div class="field">
+          <label>Forma de pago</label>
+          <div class="pago-group" id="pagoGroup">
+            <button type="button" class="pago-btn active" data-value="Pendiente">Pendiente</button>
+            <button type="button" class="pago-btn" data-value="Efectivo">Efectivo</button>
+            <button type="button" class="pago-btn" data-value="QR">QR</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>Categoría</label>
+          <div class="categoria-group" id="categoriaGroup">
+            <button type="button" class="categoria-btn active" data-value="Joven">Joven</button>
+            <button type="button" class="categoria-btn" data-value="Adulto">Adulto</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>Precio</label>
+          <div class="precio-group" id="precioGroup">
+            <button type="button" class="precio-btn active" data-value="Normal 10bs">Precio normal <span>10 Bs</span></button>
+            <button type="button" class="precio-btn" data-value="Niño 5bs">Precio niño <span>5 Bs</span></button>
+          </div>
+        </div>
+        <button type="submit" class="submit-btn" id="submitBtn">Registrar</button>
+      </form>
+      <p class="hint">Los datos se guardan en tiempo real en Firebase.</p>
+    </div>
+  </div>
+
+  <!-- Panel Lista -->
+  <div class="panel" id="panelLista" style="display:none;">
+    <div class="card">
+      <div class="list-header">
+        <span style="font-weight:600;"><span class="live-dot"></span>Inscritos</span>
+        <button class="refresh-btn" onclick="exportarCSV()">⬇ Exportar</button>
+      </div>
+
+      <div class="toast" id="listToast"></div>
+
+      <div class="capacity">
+        <svg class="capacity-flame" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c-1.6 2.6-4.4 5-5.6 7.6C5.6 11.4 5 13 5 14.5 5 18.6 8.1 22 12 22s7-3.4 7-7.5c0-2-1-3.4-2-4.6.3 2-1 3-1.8 2.2 1-3-0.6-5.4-2.2-8.5-0.3 1.8-1.2 3-2.3 4 .4-1.8-.2-3.6-.7-5.6z"/></svg>
+        <span><strong id="capCount">0</strong> inscritos</span>
+      </div>
+
+      <input type="text" class="search-box" id="searchBox" placeholder="Buscar por nombre o celular" oninput="filterList()">
+      <div id="listContainer"><p class="state-msg">Conectando…</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+
+<script>
+// ============================================================
+// CONFIGURACIÓN — pega aquí tu firebaseConfig
+// ============================================================
+const firebaseConfig = {
+  apiKey:            "AIzaSyBkPVU0TPvrRtp8S3_FoKszLwOzoK2WltE",
+  authDomain:        "san-juan-shalom.firebaseapp.com",
+  databaseURL:       "https://san-juan-shalom-default-rtdb.firebaseio.com",
+  projectId:         "san-juan-shalom",
+  storageBucket:     "san-juan-shalom.firebasestorage.app",
+  messagingSenderId: "805034885695",
+  appId:             "1:805034885695:web:cea3589afc9e965fd72e8a"
+};
+
+const REGISTRADORES = ['Brandon', 'Brenda', 'Britani'];
+
+// ============================================================
+// Inicializa Firebase
+// ============================================================
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+// ============================================================
+// Estado
+// ============================================================
+let registradorActual = null;
+let allRegistrations  = [];
+let selectedPago      = 'Pendiente';
+let selectedCategoria = 'Joven';
+let selectedPrecio    = 'Normal 10bs';
+
+// ============================================================
+// Utilidades
+// ============================================================
+function esc(str){
+  return String(str == null ? '' : str)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+function formatFecha(ts){
+  if(!ts) return '';
+  try{
+    const d = new Date(ts);
+    return d.toLocaleString('es-BO',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+  }catch(e){ return ''; }
+}
+
+function normalizePhone(raw){
+  let d = (raw||'').replace(/\D/g,'');
+  if(d.startsWith('0')) d = d.slice(1);
+  if(d.startsWith('591') && d.length > 8) return d;
+  return '591' + d;
+}
+
+function buildWaLink(celular, nombre, pago){
+  const phone = normalizePhone(celular);
+  const primer = (nombre||'').trim().split(' ')[0];
+  let msg = 'Hola' + (primer ? ' '+primer : '') + ', te escribimos de San Juan Shalom. Tu registro fue confirmado.';
+  if(pago === 'Pendiente') msg += ' Recuerda completar tu pago antes del evento.';
+  return 'https://wa.me/' + phone + '?text=' + encodeURIComponent(msg);
+}
+
+function showToast(msg, type){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + type;
+  setTimeout(()=>{ t.classList.remove('show'); }, 4000);
+}
+
+function showListToast(msg, type){
+  const t = document.getElementById('listToast');
+  t.textContent = msg;
+  t.className = 'toast show ' + type;
+  setTimeout(()=>{ t.classList.remove('show'); }, 4000);
+}
+
+// ============================================================
+// Tabs
+// ============================================================
+function switchTab(tab){
+  const isR = tab === 'registrar';
+  document.getElementById('panelRegistrar').style.display = isR ? '' : 'none';
+  document.getElementById('panelLista').style.display     = isR ? 'none' : '';
+  document.getElementById('tabBtnRegistrar').classList.toggle('active', isR);
+  document.getElementById('tabBtnLista').classList.toggle('active', !isR);
+}
+
+// ============================================================
+// Botones de pago y categoría
+// ============================================================
+document.getElementById('pagoGroup').addEventListener('click', function(e){
+  const btn = e.target.closest('.pago-btn');
+  if(!btn) return;
+  document.querySelectorAll('.pago-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  selectedPago = btn.dataset.value;
+});
+
+document.getElementById('categoriaGroup').addEventListener('click', function(e){
+  const btn = e.target.closest('.categoria-btn');
+  if(!btn) return;
+  document.querySelectorAll('.categoria-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  selectedCategoria = btn.dataset.value;
+});
+
+document.getElementById('precioGroup').addEventListener('click', function(e){
+  const btn = e.target.closest('.precio-btn');
+  if(!btn) return;
+  document.querySelectorAll('.precio-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  selectedPrecio = btn.dataset.value;
+});
+
+function resetPago(){
+  document.querySelectorAll('.pago-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelector('.pago-btn[data-value="Pendiente"]').classList.add('active');
+  selectedPago = 'Pendiente';
+}
+function resetCategoria(){
+  document.querySelectorAll('.categoria-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelector('.categoria-btn[data-value="Joven"]').classList.add('active');
+  selectedCategoria = 'Joven';
+}
+function resetPrecio(){
+  document.querySelectorAll('.precio-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelector('.precio-btn[data-value="Normal 10bs"]').classList.add('active');
+  selectedPrecio = 'Normal 10bs';
+}
+
+// ============================================================
+// Registrador (quién está inscribiendo)
+// ============================================================
+function initRegistrador(){
+  const saved = localStorage.getItem('sjs_registrador');
+  if(saved){ registradorActual = saved; updateRegistradorBar(); }
+  else { showRegistradorOverlay(); }
+}
+
+function showRegistradorOverlay(){
+  const container = document.getElementById('registradorOptions');
+  container.innerHTML = '';
+  REGISTRADORES.forEach(name => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'registrador-opt-btn';
+    btn.textContent = name;
+    btn.onclick = () => selectRegistrador(name);
+    container.appendChild(btn);
+  });
+  document.getElementById('registradorOverlay').style.display = 'flex';
+}
+
+function hideRegistradorOverlay(){
+  document.getElementById('registradorOverlay').style.display = 'none';
+}
+
+function selectRegistrador(name){
+  name = (name||'').trim();
+  if(!name) return;
+  localStorage.setItem('sjs_registrador', name);
+  registradorActual = name;
+  updateRegistradorBar();
+  hideRegistradorOverlay();
+}
+
+function confirmarRegistradorOtro(){
+  const input = document.getElementById('registradorOtroInput');
+  const val   = input.value.trim();
+  if(!val){ input.focus(); return; }
+  selectRegistrador(val);
+  input.value = '';
+}
+
+function updateRegistradorBar(){
+  const bar = document.getElementById('registradorBar');
+  if(registradorActual){
+    document.getElementById('registradorNombre').textContent = registradorActual;
+    bar.style.display = 'block';
+  } else {
+    bar.style.display = 'none';
+  }
+}
+
+function cambiarRegistrador(){
+  localStorage.removeItem('sjs_registrador');
+  registradorActual = null;
+  updateRegistradorBar();
+  showRegistradorOverlay();
+}
+
+// ============================================================
+// Registro — guarda en Firebase
+// ============================================================
+document.getElementById('formRegistro').addEventListener('submit', async function(e){
+  e.preventDefault();
+
+  if(!registradorActual){ showRegistradorOverlay(); return; }
+
+  const nombre  = document.getElementById('nombre').value.trim();
+  const celular = document.getElementById('celular').value.trim();
+
+  if(!nombre){ showToast('Escribe el nombre.', 'error'); return; }
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Guardando…';
+
+  try {
+    // Número de participante: cuenta los registros actuales y suma 1
+    // Así si borras registros, el contador vuelve a ser correcto
+    const snapshot = await db.ref('registros').once('value');
+    const numero = (snapshot.numChildren() || 0) + 1;
+
+    // Guarda el registro
+    await db.ref('registros').push({
+      numero,
+      nombre,
+      celular,
+      pago:        selectedPago,
+      categoria:   selectedCategoria,
+      precio:      selectedPrecio,
+      registrador: registradorActual,
+      fecha:       Date.now()
+    });
+
+    showToast('¡' + nombre + ' registrado! N° ' + numero, 'success');
+    document.getElementById('nombre').value  = '';
+    document.getElementById('celular').value = '';
+    resetPago();
+    resetCategoria();
+    resetPrecio();
+    document.getElementById('nombre').focus();
+
+  } catch(err) {
+    showToast('Error al guardar: ' + err.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Registrar';
+  }
+});
+
+// ============================================================
+// Lista — escucha en tiempo real (se actualiza sola)
+// ============================================================
+function updateCapacity(count){
+  document.getElementById('capCount').textContent = count;
+  document.getElementById('tabCount').textContent = '(' + count + ')';
+}
+
+function buildMetaLine(item){
+  const parts = [];
+  if(item.celular)     parts.push(esc(item.celular));
+  if(item.fecha)       parts.push(formatFecha(item.fecha));
+  if(item.categoria)   parts.push(esc(item.categoria));
+  if(item.precio)      parts.push(esc(item.precio));
+  if(item.registrador) parts.push(esc(item.registrador));
+  return parts.join(' · ');
+}
+
+function renderList(data){
+  const container = document.getElementById('listContainer');
+  if(!data.length){
+    container.innerHTML = '<p class="empty-state">Aún no hay inscritos.</p>';
+    return;
+  }
+  container.innerHTML = data.map(item => `
+    <div class="guest-card" data-key="${esc(item._key)}">
+      <div class="guest-card-top">
+        <div class="numero-badge">#${esc(item.numero)}</div>
+        <div class="guest-info">
+          <div class="guest-name">${esc(item.nombre)}</div>
+          <div class="guest-meta">${buildMetaLine(item)}</div>
+        </div>
+        ${item.celular ? `
+        <a class="wa-btn" href="${buildWaLink(item.celular, item.nombre, item.pago)}" target="_blank" rel="noopener" aria-label="WhatsApp ${esc(item.nombre)}">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.85.5 3.58 1.4 5.09L2 22l5.18-1.49a9.84 9.84 0 0 0 4.86 1.28h.01c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2zm5.81 14.05c-.25.7-1.45 1.34-2 1.43-.5.08-1.13.11-1.83-.11-.42-.13-.96-.31-1.65-.6-2.9-1.25-4.79-4.17-4.94-4.37-.14-.2-1.18-1.57-1.18-3 0-1.42.75-2.12 1.02-2.41.26-.29.57-.36.76-.36.19 0 .38 0 .54.01.17.01.4-.07.63.48.24.57.81 2 .88 2.14.07.15.12.32.02.51-.1.19-.15.31-.3.48-.15.17-.31.38-.45.51-.15.14-.3.3-.13.6.18.3.8 1.32 1.72 2.14 1.18 1.06 2.18 1.39 2.49 1.55.31.16.49.13.67-.06.18-.2.78-.91.99-1.22.21-.31.42-.26.7-.16.28.1 1.79.85 2.1 1 .31.16.51.23.59.36.08.13.08.74-.17 1.43z"/></svg>
+        </a>` : ''}
+        <button type="button" class="delete-btn" data-key="${esc(item._key)}" data-nombre="${esc(item.nombre)}" aria-label="Borrar ${esc(item.nombre)}">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M9 3h6l1 1h4v2H4V4h4L9 3zm-2 5h10l-1 13H8L7 8zm4 2v9h1v-9h-1zm-2 0v9h1v-9H9zm6 0v9h1v-9h-1z"/></svg>
+        </button>
+      </div>
+      <div class="pago-mini-group">
+        <button type="button" class="pago-mini-btn ${item.pago==='Pendiente'?'active':''}" data-value="Pendiente">Pendiente</button>
+        <button type="button" class="pago-mini-btn ${item.pago==='Efectivo'?'active':''}" data-value="Efectivo">Efectivo</button>
+        <button type="button" class="pago-mini-btn ${item.pago==='QR'?'active':''}" data-value="QR">QR</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterList(){
+  const q = document.getElementById('searchBox').value.trim().toLowerCase();
+  if(!q){ renderList(allRegistrations); return; }
+  renderList(allRegistrations.filter(item =>
+    (item.nombre||'').toLowerCase().includes(q) ||
+    (item.celular||'').toLowerCase().includes(q)
+  ));
+}
+
+// Escucha en tiempo real — la lista se actualiza sola cuando alguien registra
+db.ref('registros').on('value', snapshot => {
+  const data = snapshot.val();
+  if(!data){
+    allRegistrations = [];
+  } else {
+    allRegistrations = Object.entries(data)
+      .map(([key, val]) => ({ _key: key, ...val }))
+      .sort((a, b) => b.numero - a.numero); // más reciente primero
+  }
+  updateCapacity(allRegistrations.length);
+  filterList();
+  document.getElementById('listContainer').querySelector('.state-msg') &&
+    (document.getElementById('listContainer').innerHTML = ''); // limpia el "Conectando…"
+  filterList();
+}, error => {
+  document.getElementById('listContainer').innerHTML =
+    '<p class="state-msg">Error al conectar con Firebase: ' + esc(error.message) + '</p>';
+});
+
+// Cambiar pago desde la lista
+document.getElementById('listContainer').addEventListener('click', function(e){
+  const pagoBtn = e.target.closest('.pago-mini-btn');
+  if(pagoBtn && !pagoBtn.classList.contains('active')){
+    const card = pagoBtn.closest('.guest-card');
+    updatePago(card.dataset.key, pagoBtn.dataset.value, card);
+    return;
+  }
+  const delBtn = e.target.closest('.delete-btn');
+  if(delBtn){
+    pedirConfirmBorrar(delBtn.dataset.key, delBtn.dataset.nombre);
+  }
+});
+
+async function updatePago(key, pago, cardEl){
+  // Actualiza la UI de inmediato
+  cardEl.querySelectorAll('.pago-mini-btn').forEach(b=>b.classList.toggle('active', b.dataset.value===pago));
+  const item = allRegistrations.find(r=>r._key===key);
+  if(item){ item.pago = pago; }
+
+  try{
+    await db.ref('registros/' + key).update({ pago });
+  } catch(err){
+    showListToast('No se pudo guardar el cambio: ' + err.message, 'error');
+  }
+}
+
+// ============================================================
+// Borrar inscrito
+// ============================================================
+let pendingDeleteKey = null;
+
+function pedirConfirmBorrar(key, nombre){
+  pendingDeleteKey = key;
+  document.getElementById('confirmMsg').textContent =
+    '¿Seguro que quieres borrar a ' + nombre + '? Esta acción no se puede deshacer.';
+  document.getElementById('confirmOverlay').style.display = 'flex';
+  document.getElementById('confirmDeleteBtn').onclick = confirmarBorrar;
+}
+
+function cerrarConfirm(){
+  pendingDeleteKey = null;
+  document.getElementById('confirmOverlay').style.display = 'none';
+}
+
+async function confirmarBorrar(){
+  if(!pendingDeleteKey) return;
+  const key = pendingDeleteKey;
+  cerrarConfirm();
+  try{
+    await db.ref('registros/' + key).remove();
+    // La lista se actualiza sola por el listener en tiempo real
+  } catch(err){
+    showListToast('No se pudo borrar: ' + err.message, 'error');
+  }
+}
+
+// ============================================================
+// Exportar a CSV (Excel lo abre con doble clic)
+// ============================================================
+function exportarCSV(){
+  if(!allRegistrations.length){
+    showListToast('No hay inscritos para exportar.', 'error');
+    return;
+  }
+  const encabezado = ['Número','Nombre','Celular','Pago','Categoría','Precio','Registrador','Fecha'];
+  const filas = allRegistrations
+    .slice()
+    .sort((a,b) => a.numero - b.numero)
+    .map(item => [
+      item.numero,
+      item.nombre       || '',
+      item.celular      || '',
+      item.pago         || '',
+      item.categoria    || '',
+      item.precio       || '',
+      item.registrador  || '',
+      item.fecha ? new Date(item.fecha).toLocaleString('es-BO') : ''
+    ]);
+
+  const csv = [encabezado, ...filas]
+    .map(row => row.map(cell => '"' + String(cell).replace(/"/g,'""') + '"').join(','))
+    .join('\r\n');
+
+  const bom  = '\uFEFF'; // para que Excel abra bien los acentos
+  const blob = new Blob([bom + csv], { type: 'text/csv;charset=utf-8;' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = 'San_Juan_Shalom_' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ============================================================
+// Inicio
+// ============================================================
+window.addEventListener('DOMContentLoaded', () => {
+  initRegistrador();
+});
+</script>
+</body>
+</html>
